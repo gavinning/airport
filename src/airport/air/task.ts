@@ -2,9 +2,6 @@ import { Step } from './step'
 import { log } from '../lib/log'
 import type { TaskOptions, StepRaw } from '../types'
 
-/**
- * 任务类，管理多个步骤的顺序执行
- */
 export class Task {
   public name: string
   public opt: TaskOptions

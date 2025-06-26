@@ -1,9 +1,6 @@
 import { run } from '../lib/run'
 import type { StepRaw } from '../types'
 
-/**
- * 步骤类，代表流水线中的单个执行步骤
- */
 export class Step {
   public name: string
   private test: boolean

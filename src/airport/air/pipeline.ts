@@ -1,9 +1,6 @@
 import { Task } from './task'
 import { log } from '../lib/log'
 
-/**
- * 任务类，管理多个步骤的顺序执行
- */
 export class PipeLine {
   public name?: string
   private tasks: Task[]

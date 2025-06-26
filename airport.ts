@@ -1,5 +1,6 @@
-import { PipeLine, Task, remote, logError } from './src/airport'
+import { join } from 'path'
 import { name, version } from './package.json'
+import { PipeLine, Task, remote, exec, logError } from './src/airport'
 
 const file = [name, version].join('-') + '.tgz'
 
@@ -17,10 +18,16 @@ const deployTask = new Task({
     {
       name: '发布到远程服务器',
       async run() {
+        exec(true, 'ls -al .cache')
         const ssh = remote('gavin@192.168.5.121')
+        const dir = (path?: string) => join('/home/gavin/test', path ?? '')
+
         try {
-          await ssh.run('mkdir -p /home/gavin/test')
-          await ssh.scp(`.cache/${file}`, '/home/gavin/test')
+          await ssh.run('rm -f', dir('latest'))
+          await ssh.run('mkdir -p', dir(version))
+          await ssh.scp(`.cache/${file}`, dir())
+          await ssh.run('tar -zxvf', dir(file), '-C', dir(version))
+          await ssh.run('ln -s', dir(version), dir('latest'))
         }
         catch (e) {
           logError(e)

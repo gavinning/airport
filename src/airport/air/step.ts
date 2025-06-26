@@ -1,5 +1,5 @@
 import { run } from '../lib/run'
-import type { StepRaw, StepResult } from '../types'
+import type { StepRaw } from '../types'
 
 /**
  * 步骤类，代表流水线中的单个执行步骤
@@ -51,11 +51,13 @@ export class Step {
    */
   private async runArray() {
     const runArray = this.step.run as string[]
-    const command = runArray.join(' && ')
     if (this.test) {
-      console.log(`[TEST MODE] Would execute array: ${command}`)
+      console.log(`[TEST MODE] Would execute array: ${runArray}`)
     } else {
-      return await run(command)
+      for (const cmd of runArray) {
+        await run(cmd)
+      }
     }
   }
 }
+

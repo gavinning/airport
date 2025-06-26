@@ -11,6 +11,7 @@ export interface StepResult {
  */
 export interface StepRaw {
   name: string
+  skip?: boolean
   run: string | string[] | ((...args: any[]) => Promise<any>)
 }
 

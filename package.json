@@ -1,6 +1,6 @@
 {
   "name": "airport2",
-  "version": "0.0.2",
+  "version": "0.0.3",
   "main": "src/index.ts",
   "type": "module",
   "scripts": {
@@ -33,5 +33,8 @@
     "@types/bun": "latest",
     "@types/node": "^20.12.7",
     "vitest": "^1.6.0"
+  },
+  "dependencies": {
+    "chalk": "^5.4.1"
   }
 }

@@ -18,10 +18,8 @@ const deployTask = new Task({
     {
       name: '发布到远程服务器',
       async run() {
-        exec(true, 'ls -al .cache')
         const ssh = remote('gavin@192.168.5.121')
         const dir = (path?: string) => join('/home/gavin/test', path ?? '')
-
         try {
           await ssh.run('rm -f', dir('latest'))
           await ssh.run('mkdir -p', dir(version))

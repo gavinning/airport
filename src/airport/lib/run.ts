@@ -1,4 +1,5 @@
 import { log } from './log'
+import { green, gray } from './color'
 import { spawn, execSync } from 'child_process'
 
 /**
@@ -10,7 +11,7 @@ import { spawn, execSync } from 'child_process'
  */
 export const run = (command: string) =>
   new Promise((resolve, reject) => {
-    log('Running:', command)
+    log(gray('Running:'), green(command))
     const child = spawn(command, {
       shell: true,
       stdio: 'inherit',
@@ -37,7 +38,7 @@ export function exec(print: boolean | string, command?: string): string {
   }
   let output = execSync(command ?? 'echo').toString()
   if (print) {
-    log('Running:', command)
+    log(gray('Running:'), green(command))
     log(output)
   }
   return output

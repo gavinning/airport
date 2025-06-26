@@ -1,15 +1,17 @@
-import { run } from '../lib/run'
+import { log, run } from '../lib'
 import type { StepRaw } from '../types'
 
 export class Step {
   public name: string
-  private test: boolean
+  public skip: boolean = false
   private step: StepRaw
+  private test: boolean
 
   constructor(step: StepRaw, test: boolean = false) {
     this.test = test
     this.step = step
     this.name = step.name
+    this.skip = step.skip ?? false
   }
 
   /**
@@ -23,7 +25,7 @@ export class Step {
     } else {
       // 函数类型的步骤
       if (this.test) {
-        console.log(`[TEST MODE] Would execute function: ${this.step.run.name}`)
+        log(`[TEST MODE] Would execute function: ${this.step.run.name}`)
       } else {
         // 实际执行函数
         return await this.step.run()
@@ -37,7 +39,7 @@ export class Step {
   private async runString() {
     const runString = this.step.run as string
     if (this.test) {
-      console.log(`[TEST MODE] Would execute: ${runString}`)
+      log(`[TEST MODE] Would execute: ${runString}`)
     } else {
       return await run(runString)
     }
@@ -49,7 +51,7 @@ export class Step {
   private async runArray() {
     const runArray = this.step.run as string[]
     if (this.test) {
-      console.log(`[TEST MODE] Would execute array: ${runArray}`)
+      log(`[TEST MODE] Would execute array: ${runArray}`)
     } else {
       for (const cmd of runArray) {
         await run(cmd)

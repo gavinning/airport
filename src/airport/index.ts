@@ -9,7 +9,7 @@ export * from './lib/log'
 import { PipeLine } from './air/pipeline'
 import { Task } from './air/task'
 import { Step } from './air/step'
-import { run } from './lib/run'
+import { run, exec } from './lib/run'
 import { log, logError } from './lib/log'
 import { remote } from './lib/remote'
 
@@ -17,7 +17,7 @@ export default {
   PipeLine,
   Task,
   Step,
-  run,
   remote,
+  run, exec,
   log, logError,
 }

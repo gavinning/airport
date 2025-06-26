@@ -1,6 +1,6 @@
 {
   "name": "airport2",
-  "version": "0.0.1",
+  "version": "0.0.2",
   "main": "src/index.ts",
   "type": "module",
   "scripts": {
@@ -8,13 +8,27 @@
     "test:watch": "vitest",
     "deploy": "bun airport.ts"
   },
+  "keywords": [
+    "airport",
+    "airport2",
+    "task",
+    "pipe",
+    "pipeline",
+    "runner",
+    "bun",
+    "typescript"
+  ],
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "git://github.com/gavinning/airport.git"
+  },
   "prettier": {
     "semi": false
   },
   "peerDependencies": {
     "typescript": "^5"
   },
-  "private": true,
   "devDependencies": {
     "@types/bun": "latest",
     "@types/node": "^20.12.7",

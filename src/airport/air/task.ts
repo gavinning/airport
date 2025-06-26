@@ -25,10 +25,10 @@ export class Task {
       if (!step.skip) {
         log(purple('Step'), gray('Start'), blue(step.name))
         step.skip || (await step.execute())
-        log(purple('Step'), gray('Start'), blue(step.name))
+        log(purple('Step'), gray('End'), blue(step.name))
       }
     }
 
-    log(purple('Task'), gray('Start'), blue(this.name))
+    log(purple('Task'), gray('End'), blue(this.name))
   }
 }

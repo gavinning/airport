@@ -17,7 +17,7 @@ export class PipeLine {
    * 执行任务中的所有步骤
    */
   async run() {
-    log(purple('Pipe'), gray('Start'), ' -------------------------')
+    log(purple('Pipe'), gray('Start'), '-------------------------')
 
     for (const task of this.tasks) {
       await task.execute()

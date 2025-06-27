@@ -15,6 +15,8 @@ export const run = (command: string) =>
     const child = spawn(command, {
       shell: true,
       stdio: 'inherit',
+      env: process.env,
+      cwd: process.cwd(),
       timeout: 30_000  // 30秒超时
     })
     child.on('exit', resolve)

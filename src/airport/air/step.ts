@@ -17,7 +17,7 @@ export class Step {
   /**
    * 执行步骤
    */
-  async execute(): Promise<any> {
+  async run(): Promise<any> {
     if (typeof this.step.run === 'string') {
       return this.runString()
     } else if (Array.isArray(this.step.run)) {

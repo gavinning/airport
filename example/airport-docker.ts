@@ -1,5 +1,5 @@
-import { name, version } from './package.json'
-import { PipeLine, Task } from './src/airport'
+import { name, version } from '../package.json'
+import { PipeLine, Task } from '../src/airport'
 
 // 创建部署任务
 const deployTask = new Task({

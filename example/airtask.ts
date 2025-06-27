@@ -1,6 +1,6 @@
 import { join } from 'path'
-import { name, version } from './package.json'
-import { PipeLine, Task, remote, exec, logError } from './src/airport'
+import { name, version } from '../package.json'
+import { Task, remote, logError } from '../src/airport'
 
 const file = [name, version].join('-') + '.tgz'
 
@@ -35,5 +35,4 @@ const deployTask = new Task({
   ],
 })
 
-// 执行流水线
-PipeLine.run([deployTask])
+deployTask.run()

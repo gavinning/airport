@@ -20,7 +20,7 @@ export class PipeLine {
     log(purple('Pipe'), gray('Start'), '-------------------------')
 
     for (const task of this.tasks) {
-      await task.execute()
+      await task.run()
     }
 
     log(`------------- ${purple("Pipe")} ${gray('End')} -------------`)

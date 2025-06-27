@@ -1,6 +1,6 @@
 # Airport
 
-使用`ts`编写`Shell`管道
+使用`ts`编写流水线
 
 ```bash
 bun add airport2
@@ -32,7 +32,7 @@ bun airport.ts // 也可以将命令添加到package.json中
 
 ## Example
 
-1、常规构建发布
+**常规构建发布范例**
 
 ```ts
 import { name, version } from './package.json'
@@ -74,14 +74,13 @@ const deployTask = new Task({
 PipeLine.run([deployTask])
 ```
 
-docker构建发布:
+**docker构建范例**
 
 ```ts
 import { name, version } from './package.json'
 import { PipeLine, Task } from 'airport2'
 
-// 创建部署任务
-const deployTask = new Task({
+const dockerTask = new Task({
   name: '部署docker应用',
   steps: [
     {
@@ -95,5 +94,5 @@ const deployTask = new Task({
   ],
 })
 
-PipeLine.run([deployTask])
+dockerTask.run()
 ```

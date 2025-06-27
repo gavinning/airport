@@ -16,7 +16,7 @@ export class Task {
   /**
    * 执行任务中的所有步骤
    */
-  async execute(test: boolean = false) {
+  async run(test: boolean = false) {
     const steps = this.steps.map((step) => new Step(step, test))
 
     log(purple('Task'), gray('Start'), blue(this.name))
@@ -24,7 +24,7 @@ export class Task {
     for (const step of steps) {
       if (!step.skip) {
         log(purple('Step'), gray('Start'), blue(step.name))
-        step.skip || (await step.execute())
+        step.skip || (await step.run())
         log(purple('Step'), gray('End'), blue(step.name))
       }
     }

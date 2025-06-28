@@ -6,11 +6,12 @@
 bun add airport2
 ```
 
+
 ## 核心架构
 
 ```
 Airport
-├── Pipeline: 管理多个Task的执行流程
+├── Pipeline
 │   ├── Task 1
 │   │   ├── Step 1
 │   │   ├── Step 2
@@ -22,15 +23,44 @@ Airport
 └── Remote: 处理远程服务器连接和操作
 ```
 
-
-## Usage
-在项目根据目录下创建`airport.ts`文件
-
-```sh
-bun airport.ts // 也可以将命令添加到package.json中
+```ts
+export {
+  PipeLine, // 管道，串行执行多个Task
+  Task,     // 任务，包含多个Step，可独立运行：Task().run()
+  Step,     // 步骤，包含一个命令集，可独立运行：Step().run()
+  run,      // 异步处理本地命令，基于`child_process.spawn`封装
+  exec,     // 同步处理本地命令，基于`child_process.execSync`封装
+  remote,   // 使用ssh在远程服务器执行命令，包含scp可以上传文件
+  log,      // 日志输出
+  logError, // 日志输出，错误日志
+  color,    // 日志染色，export = chalk
+}
 ```
 
-## Example
+
+## Usage
+
+**范例：在项目根据目录下创建`airport.ts`文件**
+
+```sh
+bun run airport.ts # 也可以将命令添加到package.json中
+```
+
+**也可根据实际需求创建多个`airport`流水线**
+```sh
+.airport
+├── deploy: 常规发布
+├── commit: git-commit
+├── docker: docker构建、推送、部署
+└── ...
+
+bun run .airport/deploy.ts
+bun run .airport/commit.ts
+bun run .airport/docker.ts
+```
+
+
+### Example
 
 **常规构建发布范例**
 
@@ -46,6 +76,7 @@ const deployTask = new Task({
     {
       name: '构建项目',
       run: [
+        'npm run build',
         'mkdir -p .cache',
         'mv `npm pack` .cache/',
       ],
@@ -54,7 +85,7 @@ const deployTask = new Task({
       name: '发布到远程服务器',
       async run() {
         const ssh = remote('user@192.168.1.1')
-        const dir = (path?: string) => join('/home/user/test', path ?? '')
+        const dir = (path?: string) => join('/apps', name, path ?? '')
 
         try {
           await ssh.run('rm -f', dir('latest'))

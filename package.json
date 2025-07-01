@@ -1,8 +1,12 @@
 {
   "name": "airport2",
-  "version": "0.0.4",
+  "version": "0.0.5",
   "main": "src/index.ts",
   "type": "module",
+  "files": [
+    "src",
+    "example"
+  ],
   "scripts": {
     "test": "vitest run",
     "test:watch": "vitest",
@@ -36,5 +40,6 @@
   },
   "dependencies": {
     "chalk": "^5.4.1"
-  }
+  },
+  "private": true
 }

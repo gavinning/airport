@@ -1,5 +1,13 @@
 import { Task } from './task'
-import { log, purple, gray } from '../lib'
+import { log, purple } from '../lib'
+import {
+  START,
+  END,
+  PIPE_TOP_LEFT,
+  PIPE_TOP_RIGHT,
+  PIPE_BOTTOM_LEFT,
+  PIPE_BOTTOM_RIGHT,
+} from '../conf'
 
 export class PipeLine {
   public name?: string
@@ -17,12 +25,12 @@ export class PipeLine {
    * 执行任务中的所有步骤
    */
   async run() {
-    log(purple('Pipe'), gray('Start'), '-------------------------')
+    log(PIPE_TOP_LEFT, purple('Airport PipeLine'), START, PIPE_TOP_RIGHT)
 
     for (const task of this.tasks) {
       await task.run()
     }
 
-    log(`------------- ${purple("Pipe")} ${gray('End')} -------------`)
+    log(PIPE_BOTTOM_LEFT, purple('Airport PipeLine'), END, PIPE_BOTTOM_RIGHT)
   }
 }

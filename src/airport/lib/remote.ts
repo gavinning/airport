@@ -1,4 +1,6 @@
-import { run } from './run'
+import { logStart } from './log'
+import { run, spawn } from './run'
+import { green, gray } from './color'
 
 export interface RemoteConfig {
   ssh: string
@@ -18,7 +20,7 @@ class Remote {
    * @returns Promise<void>
    */
   async run(...cmd: string[]): Promise<void> {
-    await run(`ssh ${this.opt.ssh} "${cmd.join(' ')}"`)
+    await this.sshRun(cmd.join(' '))
   }
 
   /**
@@ -29,5 +31,12 @@ class Remote {
    */
   async scp(src: string, dist: string) {
     await run(`scp ${src} ${this.opt.ssh}:${dist}`)
+  }
+
+  // 执行ssh命令
+  private sshRun(command: string) {
+    const cmd = `ssh ${this.opt.ssh} "${command}"`
+    logStart(gray(this.opt.ssh), green(command))
+    return spawn(cmd)
   }
 }

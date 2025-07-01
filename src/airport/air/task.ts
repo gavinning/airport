@@ -1,5 +1,6 @@
 import { Step } from './step'
-import { log, purple, gray, blue } from '../lib'
+import { logStart, purple, blue } from '../lib'
+import { START, END } from '../conf'
 import type { TaskOptions, StepRaw } from '../types'
 
 export class Task {
@@ -19,16 +20,16 @@ export class Task {
   async run(test: boolean = false) {
     const steps = this.steps.map((step) => new Step(step, test))
 
-    log(purple('Task'), gray('Start'), blue(this.name))
+    logStart(purple('T'), START, blue(this.name))
 
     for (const step of steps) {
       if (!step.skip) {
-        log(purple('Step'), gray('Start'), blue(step.name))
+        logStart(purple('S'), START, blue(step.name))
         step.skip || (await step.run())
-        log(purple('Step'), gray('End'), blue(step.name))
+        logStart(purple('S'), END, blue(step.name))
       }
     }
 
-    log(purple('Task'), gray('End'), blue(this.name))
+    logStart(purple('T'), END, blue(this.name))
   }
 }

@@ -26,7 +26,6 @@ const deployTask = new Task({
           await ssh.scp(`.cache/${file}`, dir())
           await ssh.run('tar -zxvf', dir(file), '-C', dir(version))
           await ssh.run('ln -s', dir(version), dir('latest'))
-          await ssh.run('rm -f', dir(file))
         }
         catch (e) {
           logError(e)
@@ -37,4 +36,4 @@ const deployTask = new Task({
 })
 
 // 执行流水线
-PipeLine.run([deployTask])
+PipeLine.test([deployTask])

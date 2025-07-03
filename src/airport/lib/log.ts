@@ -1,7 +1,15 @@
 import { Writable } from 'stream'
-import { gray } from './color'
+import { blue, gray, purple } from './color'
 import { formatTimestamp } from './date'
-import { PIPE_PREFIX } from '../conf'
+import {
+  START,
+  END,
+  PIPE_PREFIX,
+  PIPE_TOP_LEFT,
+  PIPE_TOP_RIGHT,
+  PIPE_BOTTOM_LEFT,
+  PIPE_BOTTOM_RIGHT,
+} from '../conf'
 
 export const log = (...args: any[]) => {
   console.log(gray(`[${formatTimestamp()}]`), ...args)
@@ -19,6 +27,11 @@ export const logErrorStart = (...args: any[]) => {
   logError(PIPE_PREFIX, ...args)
 }
 
+export const logTesting = (...args: any[]) => {
+  logStart(gray('Testing'), ...args)
+}
+
+// 日志流、用于子进程直接输出日志到控制台
 export const createLogStream = (prefix?: string) =>
   new Writable({
     write(chunk: Buffer, _encoding, callback) {
@@ -39,3 +52,42 @@ export const createLogStream = (prefix?: string) =>
       callback()
     },
   })
+
+
+// 流水线开始时日志
+export const logPipeStart = () => {
+  log(PIPE_TOP_LEFT, purple('Airport PipeLine'), START, PIPE_TOP_RIGHT)
+}
+
+// 流水线结束时日志
+export const logPipeEnd = () => {
+  log(PIPE_BOTTOM_LEFT, purple('Airport PipeLine'), END, PIPE_BOTTOM_RIGHT)
+}
+
+
+// 任务开始时日志
+export const logTaskStart = ({ name, index, inPipeLine }) => {
+  if (!inPipeLine) {
+    logPipeStart()
+  }
+  logStart(purple('T' + index), START, blue(name))
+}
+
+// 任务结束时日志
+export const logTaskEnd = ({ name, index, inPipeLine }) => {
+  logStart(purple('T' + index), END, blue(name))
+  if (!inPipeLine) {
+    logPipeEnd()
+  }
+}
+
+
+// 步骤开始时日志
+export const logStepStart = ({ name, index }) => {
+  logStart(purple('S'+ index), START, blue(name))
+}
+
+// 步骤结束时日志
+export const logStepEnd = ({ name, index }) => {
+  logStart(purple('S'+ index), END, blue(name))
+}

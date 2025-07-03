@@ -1,35 +1,48 @@
-import { log, run } from '../lib'
 import type { StepRaw } from '../types'
+import { log, run, logStepStart, logStepEnd, logTesting } from '../lib'
 
 export class Step {
   public name: string
   public skip: boolean = false
+  public index: number = 1 // 当前索引
   private step: StepRaw
-  private test: boolean
+  private testing: boolean = false
 
-  constructor(step: StepRaw, test: boolean = false) {
-    this.test = test
+  constructor(step: StepRaw) {
     this.step = step
     this.name = step.name
     this.skip = step.skip ?? false
   }
 
+  async run() {
+    this.beforeRun()
+    await this.exec()
+    this.afterRun()
+  }
+
+  async test() {
+    this.testing = true
+    this.beforeRun()
+    if (typeof this.step.run === 'string') {
+      this.runStringTesting()
+    } else if (Array.isArray(this.step.run)) {
+      this.runArrayTesting()
+    } else {
+      logTesting('[async function run]')
+    }
+    this.afterRun()
+  }
+
   /**
    * 执行步骤
    */
-  async run(): Promise<any> {
+  private async exec(): Promise<any> {
     if (typeof this.step.run === 'string') {
       return this.runString()
     } else if (Array.isArray(this.step.run)) {
       return this.runArray()
     } else {
-      // 函数类型的步骤
-      if (this.test) {
-        log(`[TEST MODE] Would execute function: ${this.step.run.name}`)
-      } else {
-        // 实际执行函数
-        return await this.step.run()
-      }
+      return await this.step.run()
     }
   }
 
@@ -38,11 +51,7 @@ export class Step {
    */
   private async runString() {
     const runString = this.step.run as string
-    if (this.test) {
-      log(`[TEST MODE] Would execute: ${runString}`)
-    } else {
-      return await run(runString)
-    }
+    return await run(runString)
   }
 
   /**
@@ -50,13 +59,28 @@ export class Step {
    */
   private async runArray() {
     const runArray = this.step.run as string[]
-    if (this.test) {
-      log(`[TEST MODE] Would execute array: ${runArray}`)
-    } else {
-      for (const cmd of runArray) {
-        await run(cmd)
-      }
+    for (const cmd of runArray) {
+      await run(cmd)
     }
   }
-}
 
+  private runStringTesting() {
+    const runString = this.step.run as string
+    logTesting(runString)
+  }
+
+  private runArrayTesting() {
+    const runArray = this.step.run as string[]
+    for (const cmd of runArray) {
+      logTesting(cmd)
+    }
+  }
+
+  private beforeRun() {
+    logStepStart(this)
+  }
+
+  private afterRun() {
+    logStepEnd(this)
+  }
+}

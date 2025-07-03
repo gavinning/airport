@@ -1,6 +1,14 @@
 # CHANGELOG
 
 
+## [0.0.6] - 2025-07-03
+
+* PipeLine支持`Task`和`TaskRaw`
+* 新增范例`example/airport-raw.ts`
+* 优化日志函数与日志输出格式
+* 新增测试模式: `PipeLine.test()`
+
+
 ## [0.0.5] - 2025-07-01
 
 * 日志模块更新，增加特殊日志

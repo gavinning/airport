@@ -1,36 +1,58 @@
 import { Task } from './task'
-import { log, purple } from '../lib'
-import {
-  START,
-  END,
-  PIPE_TOP_LEFT,
-  PIPE_TOP_RIGHT,
-  PIPE_BOTTOM_LEFT,
-  PIPE_BOTTOM_RIGHT,
-} from '../conf'
+import { logPipeStart, logPipeEnd } from '../lib'
+import type { TaskRaw } from '../types'
 
 export class PipeLine {
   public name?: string
+  // public log: boolean = true // 决定是否打印日志
   private tasks: Task[]
 
-  static run(tasks: Task[]) {
+  static run(tasks: Task[] | TaskRaw[]) {
     return new PipeLine(tasks).run()
   }
 
-  constructor(tasks: Task[]) {
-    this.tasks = tasks
+  static test(tasks: Task[] | TaskRaw[]) {
+    return new PipeLine(tasks).test()
+  }
+
+  constructor(tasks: Task[] | TaskRaw[]) {
+    if (tasks.length > 0 && tasks[0] instanceof Task) {
+      this.tasks = tasks as Task[]
+    } else {
+      this.tasks = (tasks as TaskRaw[]).map((task) => new Task(task))
+    }
   }
 
   /**
    * 执行任务中的所有步骤
    */
   async run() {
-    log(PIPE_TOP_LEFT, purple('Airport PipeLine'), START, PIPE_TOP_RIGHT)
-
-    for (const task of this.tasks) {
-      await task.run()
+    this.beforeRun()
+    for (const [index, task] of this.tasks.entries()) {
+      if (!task.skip) {
+        task.index = index + 1
+        await task._runPipeLine()
+      }
     }
+    this.afterRun()
+  }
 
-    log(PIPE_BOTTOM_LEFT, purple('Airport PipeLine'), END, PIPE_BOTTOM_RIGHT)
+  test() {
+    this.beforeRun()
+    for (const [index, task] of this.tasks.entries()) {
+      if (!task.skip) {
+        task.index = index + 1
+        task.test()
+      }
+    }
+    this.afterRun()
+  }
+
+  private beforeRun() {
+    logPipeStart()
+  }
+
+  private afterRun() {
+    logPipeEnd()
   }
 }

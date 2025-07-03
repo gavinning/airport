@@ -1,11 +1,11 @@
 import { join } from 'path'
 import { name, version } from '../package.json'
-import { PipeLine, Task, remote, logError } from '../src/airport'
+import { PipeLine, remote, logError } from '../src/airport'
 
 const file = [name, version].join('-') + '.tgz'
 
 // 创建部署任务
-const deployTask = new Task({
+const deployTask = {
   name: '部署应用',
   steps: [
     {
@@ -26,7 +26,6 @@ const deployTask = new Task({
           await ssh.scp(`.cache/${file}`, dir())
           await ssh.run('tar -zxvf', dir(file), '-C', dir(version))
           await ssh.run('ln -s', dir(version), dir('latest'))
-          await ssh.run('rm -f', dir(file))
         }
         catch (e) {
           logError(e)
@@ -34,7 +33,7 @@ const deployTask = new Task({
       },
     },
   ],
-})
+}
 
 // 执行流水线
 PipeLine.run([deployTask])

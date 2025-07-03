@@ -6,6 +6,17 @@ export interface StepResult {
   output: string
 }
 
+
+/**
+ * 任务执行结果
+ */
+export interface TaskResult {
+  success: boolean
+  stepResults: StepResult[]
+  name: string
+}
+
+
 /**
  * 步骤配置选项
  */
@@ -17,19 +28,11 @@ export interface StepRaw {
 
 
 /**
- * 任务执行结果
- */
-export interface TaskResult {
-  success: boolean
-  stepResults: StepResult[]
-  name: string
-}
-
-/**
  * 任务配置选项
  */
-export interface TaskOptions {
+export interface TaskRaw {
   name: string
   steps: StepRaw[]
   test?: boolean
+  skip?: boolean
 }

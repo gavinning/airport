@@ -1,35 +1,74 @@
 import { Step } from './step'
-import { logStart, purple, blue } from '../lib'
-import { START, END } from '../conf'
-import type { TaskOptions, StepRaw } from '../types'
+import { logTaskStart, logTaskEnd } from '../lib'
+import type { TaskRaw, StepRaw } from '../types'
 
 export class Task {
+  // 任务名称
   public name: string
-  public opt: TaskOptions
+
+  /** Task元数据 */
+  public opt: TaskRaw
+
+  /** 在流水线中的任务索引 */
+  public index: number = 1 // 当前索引
+
+  /** 流水线中是否跳过当前任务 */
+  public skip: boolean = false
+
+  // 是否无头模式，是否自调用
+  // true: PipeLine模式，Task由PipeLine.run调用
+  // false: 自调用，独立任务模式，外部直接调用Task.run
+  public inPipeLine: boolean = false
+
+  // 任务步骤
   private steps: StepRaw[]
 
-  constructor(opt: TaskOptions) {
+  constructor(opt: TaskRaw) {
     this.opt = opt
     this.name = opt.name
     this.steps = opt.steps
+    this.skip = opt.skip ?? false
   }
 
   /**
    * 执行任务中的所有步骤
    */
-  async run(test: boolean = false) {
-    const steps = this.steps.map((step) => new Step(step, test))
+  async run() {
+    this.beforeRun()
+    const steps = this.steps.map((step) => new Step(step))
 
-    logStart(purple('T'), START, blue(this.name))
-
-    for (const step of steps) {
+    for (const [index, step] of steps.entries()) {
       if (!step.skip) {
-        logStart(purple('S'), START, blue(step.name))
+        step.index = index + 1
         step.skip || (await step.run())
-        logStart(purple('S'), END, blue(step.name))
       }
     }
+    this.afterRun()
+  }
 
-    logStart(purple('T'), END, blue(this.name))
+  test() {
+    this.inPipeLine = true
+    this.beforeRun()
+    const steps = this.steps.map((step) => new Step(step))
+    for (const [index, step] of steps.entries()) {
+      if (!step.skip) {
+        step.index = index + 1
+        step.skip || (step.test())
+      }
+    }
+    this.afterRun()
+  }
+
+  async _runPipeLine() {
+    this.inPipeLine = true
+    await this.run()
+  }
+
+  private beforeRun() {
+    logTaskStart(this)
+  }
+
+  private afterRun() {
+    logTaskEnd(this)
   }
 }
